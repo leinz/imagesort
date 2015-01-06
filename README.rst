@@ -6,7 +6,7 @@ Organize images according to exif date metadata.
 Installation
 ============
 
-Install the extension with one of the following commands::
+Install with one of the following commands::
 
     $ easy_install imagesort
 
