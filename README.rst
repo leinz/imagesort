@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/leinz/imagesort.svg?branch=master
+    :target: https://travis-ci.org/leinz/imagesort
+
 imagesort
 =========
 
