@@ -1,0 +1,4 @@
+*.pyc
+imagesort.egg-info
+xunit_test_report.xml
+.tox
