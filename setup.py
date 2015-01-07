@@ -3,10 +3,9 @@ from setuptools import setup, find_packages
 import os
 
 
-def read(fname, skiplines=0):
+def readfile(fname):
     with open(os.path.join(os.path.dirname(__file__), fname)) as f:
-        lines = f.readlines()[skiplines:]
-        return ''.join(lines)
+        return f.read()
 
 
 setup(
@@ -20,8 +19,8 @@ setup(
 
     author="Børge Lanes",
     author_email="borge.lanes@gmail.com",
-    description=('Organize images according to exif date metadata.'),
-    long_description=read("README.rst", 7),
+    description=('Organize image files by date taken'),
+    long_description=readfile("README.rst"),
     license="MIT",
     keywords="media",
     url="https://github.com/leinz/imagesort",
