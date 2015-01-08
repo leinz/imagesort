@@ -53,7 +53,7 @@ def test_dryrun(tmpdir, testdir):
 
 def test_we_have_correct_filenumber(tmpdir, testdir):
     imagesort.process_images(str(testdir), str(tmpdir))
-    assert filecount(str(tmpdir)) == 3
+    assert filecount(str(tmpdir)) == 6
 
 
 def test_files_are_placed_correctly(tmpdir, testdir):
@@ -69,8 +69,21 @@ def test_files_are_placed_correctly(tmpdir, testdir):
     testdata2 = testdir.join('2.jpg')
     assert filecmp.cmp(str(path2), str(testdata2), shallow=False)
 
-    unknown_path = tmpdir.join('unknown', 'invalid.jpg')
-    assert unknown_path.check()
+    path3 = tmpdir.join('2014', '2014_04_13', '1.tiff')
+    assert path3.check()
+    testdata3 = testdir.join('1.tiff')
+    assert filecmp.cmp(str(path3), str(testdata3), shallow=False)
+
+    path4 = tmpdir.join('2014', '2014_03_22', '2.tiff')
+    assert path4.check()
+    testdata4 = testdir.join('2.tiff')
+    assert filecmp.cmp(str(path4), str(testdata4), shallow=False)
+
+    unknown_path1 = tmpdir.join('unknown', 'invalid.jpg')
+    assert unknown_path1.check()
+
+    unknown_path2 = tmpdir.join('unknown', 'invalid.tiff')
+    assert unknown_path2.check()
 
 
 def test_handle_existing_path_with_different_content(tmpdir, testdir):
@@ -90,4 +103,4 @@ def test_handle_existing_path_with_different_content(tmpdir, testdir):
     path = tmpdir.join('2014', '2014_03_22', '2-2.jpg')
     assert not os.path.exists(str(path))
 
-    assert filecount(str(tmpdir)) == 4
+    assert filecount(str(tmpdir)) == 7

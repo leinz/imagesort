@@ -4,9 +4,10 @@
 Organize image files by date taken
 ==================================
 
-All images under the given source directory are copied to the destination
-directory under subdirectories with names corresponding to when they are taken.
-Files with no or invalid exif metadata are put in the ``unknown`` directory.
+All tiff and jpg images under the given source directory are copied to the
+destination directory under subdirectories with names corresponding to when
+they are taken.  Files with no or invalid exif metadata are put in the
+``unknown`` directory.
 
 The destination directory have the following structure after processing::
 

@@ -33,7 +33,7 @@ def process_images(inputdir, outputdir, dry_run=False):
 def _get_images(path):
     for root, _, files in os.walk(path):
         for f in files:
-            if os.path.splitext(f)[1].lower() in ('.jpg', '.jpeg'):
+            if os.path.splitext(f)[1].lower() in ('.jpg', '.jpeg', '.tiff'):
                 yield os.path.join(root, f)
 
 
