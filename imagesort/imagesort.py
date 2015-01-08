@@ -11,7 +11,11 @@ logger = logging.getLogger(__name__)
 def process_dir(src, dest, dry_run=False):
     _validate_directories(src, dest)
 
-    for root, subdir, files in os.walk(src):
+    # Create destination directory if not present
+    if not os.path.isdir(dest):
+        os.makedirs(dest)
+
+    for root, _, files in os.walk(src):
         for f in files:
             if os.path.splitext(f)[1].lower() in ('.jpg', '.jpeg'):
                 srcpath = os.path.join(root, f)
@@ -32,8 +36,6 @@ def process_dir(src, dest, dry_run=False):
 def _validate_directories(src, dest):
     if not os.path.isdir(src):
         raise IOError('{} is not a directory.'.format(src))
-    if not os.path.isdir(dest):
-        raise IOError('{} is not a directory.'.format(dest))
     if _is_subdir(src, dest):
         raise SubdirError("{0} is subdirectory of {1}".format(src, dest))
     if _is_subdir(dest, src):

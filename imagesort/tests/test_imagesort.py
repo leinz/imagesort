@@ -29,6 +29,14 @@ def test_should_not_work_with_nondirs(tmpdir):
         imagesort.process_dir(str(nodir), str(tmpdir))
 
 
+def test_outputdir_created_if_not_present(tmpdir):
+    src = tmpdir.join('src')
+    dest = tmpdir.join('dest')
+    src.ensure(dir=True)
+    imagesort.process_dir(str(src), str(dest))
+    assert dest.check(dir=1)
+
+
 def test_should_not_work_with_subdirs(tmpdir):
     subdir = tmpdir.join('sub')
     subdir.ensure(dir=True)
