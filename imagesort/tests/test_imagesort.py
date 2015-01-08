@@ -26,14 +26,14 @@ def filecount(d):
 def test_should_not_work_with_nondirs(tmpdir):
     nodir = tmpdir.join('none')
     with pytest.raises(IOError):
-        imagesort.process_dir(str(nodir), str(tmpdir))
+        imagesort.process_images(str(nodir), str(tmpdir))
 
 
 def test_outputdir_created_if_not_present(tmpdir):
     src = tmpdir.join('src')
     dest = tmpdir.join('dest')
     src.ensure(dir=True)
-    imagesort.process_dir(str(src), str(dest))
+    imagesort.process_images(str(src), str(dest))
     assert dest.check(dir=1)
 
 
@@ -41,23 +41,23 @@ def test_should_not_work_with_subdirs(tmpdir):
     subdir = tmpdir.join('sub')
     subdir.ensure(dir=True)
     with pytest.raises(imagesort.SubdirError):
-        imagesort.process_dir(str(tmpdir), str(subdir))
+        imagesort.process_images(str(tmpdir), str(subdir))
     with pytest.raises(imagesort.SubdirError):
-        imagesort.process_dir(str(subdir), str(tmpdir))
+        imagesort.process_images(str(subdir), str(tmpdir))
 
 
 def test_dryrun(tmpdir, testdir):
-    imagesort.process_dir(str(testdir), str(tmpdir), dry_run=True)
+    imagesort.process_images(str(testdir), str(tmpdir), dry_run=True)
     assert len(tmpdir.listdir()) == 0
 
 
 def test_we_have_correct_filenumber(tmpdir, testdir):
-    imagesort.process_dir(str(testdir), str(tmpdir))
+    imagesort.process_images(str(testdir), str(tmpdir))
     assert filecount(str(tmpdir)) == 3
 
 
 def test_files_are_placed_correctly(tmpdir, testdir):
-    imagesort.process_dir(str(testdir), str(tmpdir), dry_run=False)
+    imagesort.process_images(str(testdir), str(tmpdir), dry_run=False)
 
     path1 = tmpdir.join('2014', '2014_04_13', '1.jpg')
     assert path1.check()
@@ -79,12 +79,12 @@ def test_handle_existing_path_with_different_content(tmpdir, testdir):
     os.makedirs(str(olddir))
     touch(str(oldpath))
 
-    imagesort.process_dir(str(testdir), str(tmpdir), dry_run=False)
+    imagesort.process_images(str(testdir), str(tmpdir), dry_run=False)
 
     path = tmpdir.join('2014', '2014_03_22', '2-1.jpg')
     assert os.path.exists(str(path))
 
-    imagesort.process_dir(str(testdir), str(tmpdir), dry_run=False)
+    imagesort.process_images(str(testdir), str(tmpdir), dry_run=False)
 
     # Should recognize existing file
     path = tmpdir.join('2014', '2014_03_22', '2-2.jpg')

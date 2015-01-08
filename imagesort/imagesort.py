@@ -8,29 +8,33 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def process_dir(src, dest, dry_run=False):
-    _validate_directories(src, dest)
+def process_images(inputdir, outputdir, dry_run=False):
+    _validate_directories(inputdir, outputdir)
 
     # Create destination directory if not present
-    if not os.path.isdir(dest):
-        os.makedirs(dest)
+    if not os.path.isdir(outputdir):
+        os.makedirs(outputdir)
 
-    for root, _, files in os.walk(src):
+    for srcpath in _get_images(inputdir):
+        date = _extract_date(srcpath)
+        destdir = os.path.join(outputdir, _date_path(date))
+        if not os.path.isdir(destdir):
+            logger.info("Creating directory %s", destdir)
+            if not dry_run:
+                os.makedirs(destdir)
+        destpath = os.path.join(destdir, os.path.basename(srcpath))
+        destpath = get_valid_destpath(srcpath, destpath)
+        if destpath:
+            logger.info("Copying %s to %s", srcpath, destpath)
+            if not dry_run:
+                shutil.copy(srcpath, destpath)
+
+
+def _get_images(path):
+    for root, _, files in os.walk(path):
         for f in files:
             if os.path.splitext(f)[1].lower() in ('.jpg', '.jpeg'):
-                srcpath = os.path.join(root, f)
-                date = _extract_date(srcpath)
-                destdir = os.path.join(dest, _date_path(date))
-                if not os.path.isdir(destdir):
-                    logger.info("Creating directory %s", destdir)
-                    if not dry_run:
-                        os.makedirs(destdir)
-                destpath = os.path.join(destdir, f)
-                destpath = get_valid_destpath(srcpath, destpath)
-                if destpath:
-                    logger.info("Copying %s to %s", srcpath, destpath)
-                    if not dry_run:
-                        shutil.copy(srcpath, destpath)
+                yield os.path.join(root, f)
 
 
 def _validate_directories(src, dest):
@@ -107,4 +111,4 @@ def main():
                         help="log actions without writing anything to disk")
     args = parser.parse_args()
 
-    process_dir(args.inputdir, args.outputdir, dry_run=args.dry_run)
+    process_images(args.inputdir, args.outputdir, dry_run=args.dry_run)
