@@ -104,7 +104,7 @@ def main():
 
     import argparse
     parser = argparse.ArgumentParser(
-        description='Copy photos to date-specific location.')
+        description='Organize image files by date taken.')
     parser.add_argument('inputdir', type=str, help='input directory')
     parser.add_argument('outputdir', type=str, help='output directory')
     parser.add_argument('--dry-run', action='store_true',
