@@ -59,25 +59,16 @@ def test_we_have_correct_filenumber(tmpdir, testdir):
 def test_files_are_placed_correctly(tmpdir, testdir):
     imagesort.process_images(str(testdir), str(tmpdir), dry_run=False)
 
-    path1 = tmpdir.join('2014', '2014_04_13', '1.jpg')
-    assert path1.check()
-    testdata1 = testdir.join('1.jpg')
-    assert filecmp.cmp(str(path1), str(testdata1), shallow=False)
+    def verify(*path):
+        result = tmpdir.join(*path)
+        testdata = testdir.join(path[-1])
+        assert result.check()
+        assert filecmp.cmp(str(result), str(testdata), shallow=False)
 
-    path2 = tmpdir.join('2014', '2014_03_22', '2.jpg')
-    assert path2.check()
-    testdata2 = testdir.join('2.jpg')
-    assert filecmp.cmp(str(path2), str(testdata2), shallow=False)
-
-    path3 = tmpdir.join('2014', '2014_04_13', '1.tiff')
-    assert path3.check()
-    testdata3 = testdir.join('1.tiff')
-    assert filecmp.cmp(str(path3), str(testdata3), shallow=False)
-
-    path4 = tmpdir.join('2014', '2014_03_22', '2.tiff')
-    assert path4.check()
-    testdata4 = testdir.join('2.tiff')
-    assert filecmp.cmp(str(path4), str(testdata4), shallow=False)
+    verify('2014', '2014_04_13', '1.jpg')
+    verify('2014', '2014_03_22', '2.jpg')
+    verify('2014', '2014_04_13', '1.tiff')
+    verify('2014', '2014_03_22', '2.tiff')
 
     unknown_path1 = tmpdir.join('unknown', 'invalid.jpg')
     assert unknown_path1.check()
