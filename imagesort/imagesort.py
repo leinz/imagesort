@@ -15,19 +15,18 @@ def process_images(inputdir, outputdir, dry_run=False):
     if not os.path.isdir(outputdir):
         os.makedirs(outputdir)
 
-    for srcpath in _get_images(inputdir):
-        date = _extract_date(srcpath)
-        destdir = os.path.join(outputdir, _date_path(date))
+    for imagepath in _get_images(inputdir):
+        destdir = os.path.join(outputdir,
+                               _get_destdir(imagepath))
+
         if not os.path.isdir(destdir):
             logger.info("Creating directory %s", destdir)
-            if not dry_run:
-                os.makedirs(destdir)
-        destpath = os.path.join(destdir, os.path.basename(srcpath))
-        destpath = get_valid_destpath(srcpath, destpath)
+            _execute(dry_run, os.makedirs, destdir)
+
+        destpath = _get_valid_destpath(imagepath, destdir)
         if destpath:
-            logger.info("Copying %s to %s", srcpath, destpath)
-            if not dry_run:
-                shutil.copy(srcpath, destpath)
+            logger.info("Copying %s to %s", imagepath, destpath)
+            _execute(dry_run, shutil.copy, imagepath, destpath)
 
 
 def _get_images(path):
@@ -46,6 +45,11 @@ def _validate_directories(src, dest):
         raise SubdirError("{0} is subdirectory of {1}".format(dest, src))
 
 
+def _execute(dry_run, func, *args):
+    if not dry_run:
+        func(*args)
+
+
 def _is_subdir(dir1, dir2):
     """Check if p1 is subdir of p2."""
     r1 = os.path.realpath(dir1)
@@ -55,8 +59,8 @@ def _is_subdir(dir1, dir2):
     return False
 
 
-def get_valid_destpath(srcpath, destpath):
-    p = destpath
+def _get_valid_destpath(srcpath, destdir):
+    p = os.path.join(destdir, os.path.basename(srcpath))
     n = 1
     while os.path.exists(p):
         if filecmp.cmp(srcpath, p, shallow=False):
@@ -64,14 +68,14 @@ def get_valid_destpath(srcpath, destpath):
                         srcpath, p)
             p = None
             break
-        base, ext = os.path.splitext(destpath)
+        base, ext = os.path.splitext(p)
         base = "{0}-{1}".format(base, n)
         p = ''.join([base, ext])
         n += 1
     return p
 
 
-def _extract_date(image_path):
+def _get_destdir(image_path):
     TAG = 'EXIF DateTimeOriginal'
     with open(image_path, 'r') as image:
         tags = exifread.process_file(
@@ -79,20 +83,18 @@ def _extract_date(image_path):
             stop_tag=TAG,
             details=False)
         try:
-            date = datetime.strptime(str(tags[TAG]), "%Y:%m:%d %H:%M:%S")
-        except KeyError:
-            date = None
-        except ValueError:
-            date = None
-    return date
+            d = _date_path(datetime.strptime(str(tags[TAG]),
+                                             "%Y:%m:%d %H:%M:%S"))
+        except (KeyError, ValueError):
+            d = 'unknown'
+
+    return d
 
 
 def _date_path(date):
-    if date:
-        return os.path.join(
-            str(date.year),
-            "{0}_{1:02d}_{2:02d}".format(date.year, date.month, date.day))
-    return 'unknown'
+    return os.path.join(
+        str(date.year),
+        "{0}_{1:02d}_{2:02d}".format(date.year, date.month, date.day))
 
 
 class SubdirError(Exception):
