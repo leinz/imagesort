@@ -34,9 +34,7 @@ setup(
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
-        'Operating System :: POSIX',
-        'Operating System :: Microsoft :: Windows',
-        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: OS Independent',
         'Topic :: Multimedia',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
