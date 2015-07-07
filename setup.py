@@ -13,7 +13,7 @@ setup(
     version="0.2.0",
     packages=find_packages(),
     install_requires=[
-        'ExifRead>=1.4.0',
+        'ExifRead>=2.1',
     ],
     include_package_data=True,
 
@@ -36,7 +36,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Topic :: Multimedia',
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
-    ],
+        'Programming Language :: Python :: 3',
+   ],
 )

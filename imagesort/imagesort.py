@@ -77,7 +77,7 @@ def _get_valid_destpath(srcpath, destdir):
 
 def _get_destdir(image_path):
     TAG = 'EXIF DateTimeOriginal'
-    with open(image_path, 'r') as image:
+    with open(image_path, 'rb') as image:
         tags = exifread.process_file(
             image,
             stop_tag=TAG,
