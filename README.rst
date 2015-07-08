@@ -4,9 +4,9 @@
 Organize image files by date taken
 ==================================
 
-All tiff and jpg images under the given source directory are copied to the
+All tiff and jpg images under the given source directory are placed in the
 destination directory under subdirectories with names corresponding to when
-they are taken.  Files with no or invalid exif metadata are put in the
+they are taken. Files with no or invalid exif metadata are put in the
 ``unknown`` directory.
 
 The destination directory have the following structure after processing::
@@ -53,14 +53,17 @@ Type ``imagesort -h`` for a list of available options.
 Examples
 --------
 
-Copying images from ``inputdir`` to ``outputdir``::
+Copy images from ``inputdir`` to ``outputdir``::
 
-    $ imagesort inputdir outputdir
+    $ imagesort copy inputdir outputdir
 
 Use the ``dry-run`` flag to see which actions will be performed without
 actually doing anything::
 
-    $ imagesort --dry-run inputdir outputdir
+    $ imagesort --dry-run copy inputdir outputdir
+
+Replace ``copy`` with ``move`` or ``hardlink`` to move or hardlink files
+instead of copying them.
 
 Development
 ===========

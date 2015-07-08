@@ -8,7 +8,20 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def process_images(inputdir, outputdir, dry_run=False):
+class Operation(object):
+    def __init__(self, func, desc):
+        self.func = func
+        self.desc = desc
+
+
+OPERATIONS = dict(
+    copy=Operation(shutil.copy, 'Copying'),
+    move=Operation(shutil.move, 'Moving'),
+    hardlink=Operation(os.link, 'Hardlinking'),
+)
+
+
+def process_images(inputdir, outputdir, operation, dry_run=False):
     _validate_directories(inputdir, outputdir)
 
     # Create destination directory if not present
@@ -25,8 +38,8 @@ def process_images(inputdir, outputdir, dry_run=False):
 
         destpath = _get_valid_destpath(imagepath, destdir)
         if destpath:
-            logger.info("Copying %s to %s", imagepath, destpath)
-            _execute(dry_run, shutil.copy, imagepath, destpath)
+            logger.info("%s %s to %s", operation.desc, imagepath, destpath)
+            _execute(dry_run, operation.func, imagepath, destpath)
 
 
 def _get_images(path):
@@ -107,10 +120,14 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(
         description='Organize image files by date taken.')
+    parser.add_argument('operation', choices=['copy', 'move', 'hardlink'],
+                        help='file operation')
     parser.add_argument('inputdir', type=str, help='input directory')
     parser.add_argument('outputdir', type=str, help='output directory')
     parser.add_argument('--dry-run', action='store_true',
                         help="log actions without writing anything to disk")
     args = parser.parse_args()
 
-    process_images(args.inputdir, args.outputdir, dry_run=args.dry_run)
+    op = OPERATIONS[args.operation]
+
+    process_images(args.inputdir, args.outputdir, op, dry_run=args.dry_run)
