@@ -4,7 +4,6 @@ from datetime import datetime
 import shutil
 import filecmp
 import logging
-import sys
 
 logger = logging.getLogger(__name__)
 

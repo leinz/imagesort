@@ -16,7 +16,6 @@ def test_available_operations():
         assert ops == set(['copy', 'move', 'hardlink'])
 
 
-
 @pytest.fixture
 def datadir(tmpdir):
     return py.path.local().join('imagesort', 'tests', 'testdata')
