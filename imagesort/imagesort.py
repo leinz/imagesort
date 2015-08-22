@@ -4,6 +4,7 @@ from datetime import datetime
 import shutil
 import filecmp
 import logging
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -14,11 +15,19 @@ class Operation(object):
         self.desc = desc
 
 
-OPERATIONS = dict(
-    copy=Operation(shutil.copy, 'Copying'),
-    move=Operation(shutil.move, 'Moving'),
-    hardlink=Operation(os.link, 'Hardlinking'),
-)
+def _valid_operations():
+    ops = dict(
+        copy=Operation(shutil.copy, 'Copying'),
+        move=Operation(shutil.move, 'Moving'),
+    )
+
+    if hasattr(os, 'link'):
+        ops['hardlink'] = Operation(os.link, 'Hardlinking')
+
+    return ops
+
+
+OPERATIONS = _valid_operations()
 
 
 def process_images(inputdir, outputdir, operation, dry_run=False):
@@ -120,7 +129,7 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(
         description='Organize image files by date taken.')
-    parser.add_argument('operation', choices=['copy', 'move', 'hardlink'],
+    parser.add_argument('operation', choices=[name for name in OPERATIONS],
                         help='file operation')
     parser.add_argument('inputdir', type=str, help='input directory')
     parser.add_argument('outputdir', type=str, help='output directory')

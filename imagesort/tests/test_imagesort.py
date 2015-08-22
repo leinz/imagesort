@@ -3,6 +3,18 @@ import py
 import os
 from imagesort import imagesort
 import filecmp
+import sys
+
+
+def test_available_operations():
+    ops = set([op for op in imagesort.OPERATIONS])
+
+    # Hardlinks for windows came in version 3.2
+    if sys.platform == 'win32' and sys.hexversion < 0x03020000:
+        assert ops == set(['copy', 'move'])
+    else:
+        assert ops == set(['copy', 'move', 'hardlink'])
+
 
 
 @pytest.fixture
@@ -116,7 +128,7 @@ def test_hardlink_operation_works(inputdir, outputdir, operation):
             if operation.desc == 'Hardlinking':
                 assert n > 1
             else:
-                assert n == 1
+                assert n <= 1
 
 
 def test_handle_existing_path_with_different_content(inputdir, outputdir,
