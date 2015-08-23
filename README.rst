@@ -65,6 +65,9 @@ actually doing anything::
 Replace ``copy`` with ``move`` or ``hardlink`` to move or hardlink files
 instead of copying them.
 
+.. note::
+    Hardlink operation (``os.link``) is not available on Windows before Python version 3.2.
+
 Development
 ===========
 
