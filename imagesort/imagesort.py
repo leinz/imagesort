@@ -1,3 +1,4 @@
+import sys
 import exifread
 import os
 from datetime import datetime
@@ -47,7 +48,11 @@ def process_images(inputdir, outputdir, operation, dry_run=False):
         destpath = _get_valid_destpath(imagepath, destdir)
         if destpath:
             logger.info("%s %s to %s", operation.desc, imagepath, destpath)
-            _execute(dry_run, operation.func, imagepath, destpath)
+            try:
+                _execute(dry_run, operation.func, imagepath, destpath)
+            except OSError:
+                logger.exception('Could not perform operation.')
+                sys.exit(1)
 
 
 def _get_images(path):
